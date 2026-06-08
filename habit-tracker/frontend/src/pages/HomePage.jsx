@@ -1,36 +1,13 @@
-import {
-    useState,
-    useEffect
-} from "react";
-
-import Header
-from "../components/Header/Header";
-
-import ProfileModal
-from "../components/ProfileModal/ProfileModal";
-
-import HabitCard
-from "../components/HabitCard/HabitCard";
-
-import {
-    getProfile
-}
-from "../api/userApi";
-
-import {
-    getGeneralStatistics
-}
-from "../api/statisticsApi";
-
-import {
-    getHabits,
-    completeHabit
-}
-from "../api/habitsApi";
-
-import useAuth
-from "../hooks/useAuth";
-
+import { useState, useEffect } from "react";
+import Header from "../components/Header/Header";
+import ProfileModal from "../components/ProfileModal/ProfileModal";
+import HabitCard from "../components/HabitCard/HabitCard";
+import { getProfile } from "../api/userApi";
+import { getGeneralStatistics } from "../api/statisticsApi";
+import { getHabits, completeHabit } from "../api/habitsApi";
+import useAuth from "../hooks/useAuth";
+import HabitModal from "../components/HabitModal/HabitModal";
+import { getHabitStatistics } from "../api/statisticsApi";
 import "./HomePage.css";
 
 function HomePage() {
@@ -39,27 +16,31 @@ function HomePage() {
         useState(null);
 
     const [statistics,
-    setStatistics] =
+        setStatistics] =
         useState(null);
 
     const [habits,
-    setHabits] =
+        setHabits] =
         useState([]);
 
     const [showProfile,
-    setShowProfile] =
+        setShowProfile] =
         useState(false);
 
     const {
         logout
     } =
-    useAuth();
+        useAuth();
 
     useEffect(() => {
 
         loadData();
 
     }, []);
+
+    const [showModal, setShowModal] = useState(false);
+    const [selectedHabit, setSelectedHabit] = useState(null);
+    const [habitStats, setHabitStats] = useState(null);
 
     async function loadData() {
 
@@ -88,7 +69,7 @@ function HomePage() {
 
         }
         catch (
-            error
+        error
         ) {
 
             console.log(
@@ -113,13 +94,27 @@ function HomePage() {
 
         }
         catch (
-            error
+        error
         ) {
 
             console.log(
                 error
             );
 
+        }
+
+    }
+
+    async function handleSelectHabit(habit) {
+
+        setSelectedHabit(habit);
+
+        try {
+            const stats = await getHabitStatistics(habit.id);
+            setHabitStats(stats);
+        }
+        catch (error) {
+            console.log(error);
         }
 
     }
@@ -136,9 +131,9 @@ function HomePage() {
 
                 onProfileClick={
                     () =>
-                    setShowProfile(
-                        true
-                    )
+                        setShowProfile(
+                            true
+                        )
                 }
 
                 onLogout={
@@ -159,14 +154,21 @@ function HomePage() {
 
                     onClose={
                         () =>
-                        setShowProfile(
-                            false
-                        )
+                            setShowProfile(
+                                false
+                            )
                     }
 
                 />
 
             }
+
+            {showModal && (
+                <HabitModal
+                    onClose={() => setShowModal(false)}
+                    onCreated={loadData}
+                />
+            )}
 
             <div className="home-page">
 
@@ -176,40 +178,53 @@ function HomePage() {
 
                         habits.map(
                             habit => (
-
                                 <HabitCard
-
-                                    key={
-                                        habit.id
-                                    }
-
-                                    habit={
-                                        habit
-                                    }
-
-                                    onComplete={
-                                        handleComplete
-                                    }
-
+                                    key={habit.id}
+                                    habit={habit}
+                                    onComplete={handleComplete}
+                                    onSelect={handleSelectHabit}
                                 />
-
                             )
                         )
-
                     }
+
+                    <button
+                        onClick={() => setShowModal(true)}
+                    >
+                        + Новая привычка
+                    </button>
 
                 </div>
 
                 <div className="habit-details">
 
-                    <h2>
-                        Детали привычки
-                    </h2>
+                    {selectedHabit ? (
+                        <>
+                            <h2>{selectedHabit.title}</h2>
 
-                    <p>
-                        Будут реализованы
-                        на этапе 3.6
-                    </p>
+                            <p>{selectedHabit.description}</p>
+
+                            {habitStats && (
+                                <>
+                                    <p>Выполнено дней: {habitStats.completedDays}</p>
+                                    <p>Текущая серия: {habitStats.currentStreak}</p>
+                                    <p>Лучшая серия: {habitStats.longestStreak}</p>
+
+                                    <h3>История</h3>
+
+                                    <ul>
+                                        {habitStats.history.map(log => (
+                                            <li key={log.id}>
+                                                {new Date(log.completed_at).toLocaleDateString()}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </>
+                            )}
+                        </>
+                    ) : (
+                        <p>Выберите привычку</p>
+                    )}
 
                 </div>
 

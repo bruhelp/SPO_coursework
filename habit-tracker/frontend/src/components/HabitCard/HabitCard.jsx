@@ -1,25 +1,9 @@
-import {
-    useState,
-    useEffect
-} from "react";
-
-import ProgressBar
-    from "../ProgressBar/ProgressBar";
-
-import {
-    getHabitStatistics
-}
-    from "../../api/statisticsApi";
-
+import { useState, useEffect } from "react";
+import ProgressBar from "../ProgressBar/ProgressBar";
+import { getHabitStatistics } from "../../api/statisticsApi";
 import "./HabitCard.css";
 
-function HabitCard({
-
-    habit,
-
-    onComplete
-
-}) {
+function HabitCard({ habit, onComplete, onSelect }) {
 
     const [
 
@@ -135,19 +119,15 @@ function HabitCard({
     return (
 
         <div
-            className="habit-card"
+            className="habit-card" onClick={() => onSelect(habit)}
         >
 
             <div
                 className="habit-header"
             >
 
-                <div
-                    className="habit-title"
-                >
-
+                <div className="habit-title">
                     {habit.title}
-
                 </div>
 
                 <button
@@ -183,15 +163,10 @@ function HabitCard({
                 habit.description
                 &&
 
-                <div
-                    className="habit-description"
-                >
-
-                    {
-                        habit.description
-                    }
-
+                <div className="habit-title">
+                    {habit.title}
                 </div>
+
 
             }
 
