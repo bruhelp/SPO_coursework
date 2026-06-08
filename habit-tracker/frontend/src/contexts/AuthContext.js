@@ -1,11 +1,10 @@
 import {
     createContext,
-    useState,
-    useEffect
+    useState
 } from "react";
 
 import storage
-from "../services/localStorageService";
+    from "../services/localStorageService";
 
 export const AuthContext =
     createContext();
@@ -15,31 +14,16 @@ export function AuthProvider(
         children
     }
 ) {
-
     const [token, setToken] =
-        useState(null);
+        useState(
+            storage.getToken()
+        );
 
     /*
         Восстановление сессии
         после обновления страницы.
     */
 
-    useEffect(() => {
-
-        const savedToken =
-            storage.getToken();
-
-        if (
-            savedToken
-        ) {
-
-            setToken(
-                savedToken
-            );
-
-        }
-
-    }, []);
 
     /*
         Авторизация.

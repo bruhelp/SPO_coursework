@@ -1,5 +1,5 @@
 import ProgressBar
-from "../ProgressBar/ProgressBar";
+    from "../ProgressBar/ProgressBar";
 
 import "./HabitCard.css";
 
@@ -36,35 +36,33 @@ function HabitCard({
 
             </div>
 
-            <div className="habit-goal">
+            {
+                habit.goal_type !== "none"
+                &&
 
-                Цель:
-                {" "}
-                {habit.goal_value}
+                (
+                    <>
+                        <div className="habit-goal">
+                            Цель: {habit.goal_value}
+                        </div>
 
-            </div>
+                        <ProgressBar
+                            value={
+                                habit.completed_days || 0
+                            }
+                            max={
+                                habit.goal_value || 1
+                            }
+                        />
+                    </>
+                )
+            }
 
             <div className="habit-description">
 
                 {habit.description}
 
             </div>
-
-            <ProgressBar
-
-                value={
-                    habit.completed_days
-                    ||
-                    0
-                }
-
-                max={
-                    habit.goal_value
-                    ||
-                    1
-                }
-
-            />
 
         </div>
 

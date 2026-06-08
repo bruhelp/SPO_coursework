@@ -113,66 +113,53 @@ async function complete(
     ipAddress
 ) {
 
-    const completedAt =
-        date
-            ?
-            new Date(date)
-            :
-            new Date();
+    const completedAt = date
+        ? new Date(date)
+        : new Date();
 
-    await logRepository
-        .add(
-            habitId,
-            completedAt
-        );
-
-    const habit =
-        await repository
-            .getById(
-                habitId
-            );
+    const habit = await repository.getById(habitId);
 
     if (!habit) {
-
-        throw createError(
-            "Habit not found.",
-            404
-        );
-
+        throw createError("Habit not found.", 404);
     }
-    
-    /*
-        Автоматическое завершение
-        привычки при достижении цели.
-    */
 
+    await logRepository.add(
+        habitId,
+        completedAt
+    );
+
+    // ❗ ВАЖНО: ручное завершение привычки (кружок)
+    await repository.update(habitId, {
+        ...habit,
+        status: "completed"
+    });
+
+    /*
+        Автоматическое завершение при цели
+    */
     if (habit.goal_type === "total") {
+
         const statistics =
-            await statisticsService
-                .getHabitStatistics(
-                    habitId
-                );
+            await statisticsService.getHabitStatistics(habitId);
 
         if (statistics.completedDays >= habit.goal_value) {
-            await repository
-                .update(
-                    habitId,
-                    {
-                        ...habit,
-                        status: "completed"
-                    }
-                );
+
+            await repository.update(habitId, {
+                ...habit,
+                status: "completed"
+            });
         }
     }
 
-    await auditService
-        .writeLog(
-            userId,
-            "complete",
-            "habit",
-            habitId,
-            ipAddress
-        );
+    await auditService.writeLog(
+        userId,
+        "complete",
+        "habit",
+        habitId,
+        ipAddress
+    );
+
+    return true;
 }
 
 module.exports = {

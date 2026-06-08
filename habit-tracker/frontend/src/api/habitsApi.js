@@ -16,9 +16,8 @@ export async function completeHabit(
 ) {
 
     const response =
-        await axiosInstance.post(
-            `/habits/${id}/complete`,
-            {}
+        await axiosInstance.patch(
+            `/habits/${id}/complete`
         );
 
     return response.data;

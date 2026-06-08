@@ -9,6 +9,9 @@ from "../components/Header/Header";
 import ProfileModal
 from "../components/ProfileModal/ProfileModal";
 
+import HabitCard
+from "../components/HabitCard/HabitCard";
+
 import {
     getProfile
 }
@@ -19,8 +22,16 @@ import {
 }
 from "../api/statisticsApi";
 
+import {
+    getHabits,
+    completeHabit
+}
+from "../api/habitsApi";
+
 import useAuth
 from "../hooks/useAuth";
+
+import "./HomePage.css";
 
 function HomePage() {
 
@@ -30,6 +41,10 @@ function HomePage() {
     const [statistics,
     setStatistics] =
         useState(null);
+
+    const [habits,
+    setHabits] =
+        useState([]);
 
     const [showProfile,
     setShowProfile] =
@@ -42,40 +57,72 @@ function HomePage() {
 
     useEffect(() => {
 
-        async function loadData() {
-
-            try {
-
-                const profile =
-                    await getProfile();
-
-                const stats =
-                    await getGeneralStatistics();
-
-                setUser(
-                    profile
-                );
-
-                setStatistics(
-                    stats
-                );
-
-            }
-            catch (
-                error
-            ) {
-
-                console.log(
-                    error
-                );
-
-            }
-
-        }
-
         loadData();
 
     }, []);
+
+    async function loadData() {
+
+        try {
+
+            const profile =
+                await getProfile();
+
+            const stats =
+                await getGeneralStatistics();
+
+            const habitsData =
+                await getHabits();
+
+            setUser(
+                profile
+            );
+
+            setStatistics(
+                stats
+            );
+
+            setHabits(
+                habitsData
+            );
+
+        }
+        catch (
+            error
+        ) {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+    async function handleComplete(
+        id
+    ) {
+
+        try {
+
+            await completeHabit(
+                id
+            );
+
+            loadData();
+
+        }
+        catch (
+            error
+        ) {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
 
     return (
 
@@ -102,9 +149,7 @@ function HomePage() {
 
             {
 
-                showProfile
-
-                &&
+                showProfile &&
 
                 <ProfileModal
 
@@ -123,9 +168,50 @@ function HomePage() {
 
             }
 
-            <div>
+            <div className="home-page">
 
-                Home Page
+                <div className="habit-list">
+
+                    {
+
+                        habits.map(
+                            habit => (
+
+                                <HabitCard
+
+                                    key={
+                                        habit.id
+                                    }
+
+                                    habit={
+                                        habit
+                                    }
+
+                                    onComplete={
+                                        handleComplete
+                                    }
+
+                                />
+
+                            )
+                        )
+
+                    }
+
+                </div>
+
+                <div className="habit-details">
+
+                    <h2>
+                        Детали привычки
+                    </h2>
+
+                    <p>
+                        Будут реализованы
+                        на этапе 3.6
+                    </p>
+
+                </div>
 
             </div>
 
