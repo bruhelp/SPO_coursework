@@ -65,21 +65,41 @@ async function archive(req, res, next) {
     }
 
 }
+async function complete(
+    req,
+    res,
+    next
+) {
 
-async function complete(req, res, next) {
     try {
+
         await service.complete(
+
             req.params.id,
-            req.body.date,
+
+            req.body
+                ?
+                req.body.date
+                :
+                null,
+
             req.user.id,
+
             req.ip
+
         );
 
         res.json({
-            message: "Habit completed."
+
+            message:
+                "Habit completed."
+
         });
+
     }
-    catch (error) {
+    catch (
+    error
+    ) {
         next(error);
     }
 }

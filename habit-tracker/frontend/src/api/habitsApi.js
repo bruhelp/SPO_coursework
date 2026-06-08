@@ -23,3 +23,15 @@ export async function completeHabit(
     return response.data;
 
 }
+
+export async function createHabit(data) {
+
+    const response =
+        await axiosInstance.post(
+            "/habits",
+            data
+        );
+
+    return response.data;
+
+}

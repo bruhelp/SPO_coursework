@@ -1,68 +1,231 @@
+import {
+    useState,
+    useEffect
+} from "react";
+
 import ProgressBar
     from "../ProgressBar/ProgressBar";
+
+import {
+    getHabitStatistics
+}
+    from "../../api/statisticsApi";
 
 import "./HabitCard.css";
 
 function HabitCard({
 
     habit,
+
     onComplete
 
 }) {
 
+    const [
+
+        statistics,
+
+        setStatistics
+
+    ] = useState(
+        null
+    );
+
+    useEffect(
+        () => {
+
+            loadStatistics();
+
+        },
+        []
+    );
+
+    async function loadStatistics() {
+
+        try {
+
+            const data =
+                await getHabitStatistics(
+                    habit.id
+                );
+
+            setStatistics(
+                data
+            );
+
+        }
+        catch (
+        error
+        ) {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+    const hasGoal =
+
+        habit.goal_type !==
+        "none";
+
+    let progress = 0;
+
+    if (
+
+        hasGoal
+        &&
+        statistics
+
+    ) {
+
+        if (
+
+            habit.goal_value > 0
+
+        ) {
+
+            progress =
+                Math.min(
+
+                    100,
+
+                    Math.floor(
+
+                        statistics.completedDays
+
+                        /
+
+                        habit.goal_value
+
+                        *
+
+                        100
+
+                    )
+
+                );
+
+        }
+
+    }
+
+    const completedToday =
+
+        statistics &&
+        statistics.history.some(
+            item => {
+
+                const today =
+                    new Date()
+                        .toDateString();
+
+                const completed =
+                    new Date(
+                        item.completed_at
+                    ).toDateString();
+
+                return today === completed;
+
+            }
+        );
+
     return (
 
-        <div className="habit-card">
+        <div
+            className="habit-card"
+        >
 
-            <div className="habit-card-header">
+            <div
+                className="habit-header"
+            >
 
                 <div
                     className="habit-title"
                 >
+
                     {habit.title}
+
                 </div>
 
                 <button
-                    className="habit-complete"
 
-                    onClick={() =>
-                        onComplete(
-                            habit.id
-                        )
+                    className=
+                    "complete-button"
+
+                    onClick={
+                        () =>
+                            onComplete(
+                                habit.id
+                            )
                     }
+
                 >
-                    ○
+
+                    {
+
+                        completedToday
+                            ?
+                            "✓"
+                            :
+                            "○"
+
+                    }
+
                 </button>
 
             </div>
 
             {
-                habit.goal_type !== "none"
+
+                habit.description
                 &&
 
-                (
-                    <>
-                        <div className="habit-goal">
-                            Цель: {habit.goal_value}
-                        </div>
+                <div
+                    className="habit-description"
+                >
 
-                        <ProgressBar
-                            value={
-                                habit.completed_days || 0
-                            }
-                            max={
-                                habit.goal_value || 1
-                            }
-                        />
-                    </>
-                )
+                    {
+                        habit.description
+                    }
+
+                </div>
+
             }
 
-            <div className="habit-description">
+            {
 
-                {habit.description}
+                hasGoal
+                &&
 
-            </div>
+                <>
+
+                    <div
+                        className="habit-goal"
+                    >
+
+                        Цель:
+                        {" "}
+
+                        {
+
+                            habit.goal_value
+
+                        }
+
+                    </div>
+
+                    <ProgressBar
+                        value={
+                            progress
+                        }
+                    />
+
+                </>
+
+            }
 
         </div>
 

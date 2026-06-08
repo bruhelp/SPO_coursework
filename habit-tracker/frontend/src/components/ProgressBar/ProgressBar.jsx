@@ -1,17 +1,8 @@
 import "./ProgressBar.css";
 
 function ProgressBar({
-    value = 0,
-    max = 1
+    value
 }) {
-
-    const percent =
-        Math.min(
-            100,
-            Math.round(
-                (value / max) * 100
-            )
-        );
 
     return (
 
@@ -20,8 +11,7 @@ function ProgressBar({
             <div
                 className="progress-fill"
                 style={{
-                    width:
-                    `${percent}%`
+                    width: `${value}%`
                 }}
             />
 
