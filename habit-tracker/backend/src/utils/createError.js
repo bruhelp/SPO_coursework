@@ -7,4 +7,4 @@ function createError(
     return error;
 }
 
-module.exports = { createError };
+module.exports = createError;

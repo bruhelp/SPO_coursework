@@ -1,0 +1,46 @@
+.header {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    border-bottom: 1px solid #dcdcdc;
+    background: white;
+}
+
+.header-left {
+    width: 200px;
+    font-size: 16px;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.header-right {
+    width: 200px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #cccccc;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logout-button {
+    cursor: pointer;
+    padding: 8px 14px;
+}

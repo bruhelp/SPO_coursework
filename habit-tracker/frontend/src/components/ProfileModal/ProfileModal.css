@@ -1,0 +1,33 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(
+        0,
+        0,
+        0,
+        0.4
+    );
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-modal {
+    width: 350px;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.profile-modal h2 {
+    margin-bottom: 20px;
+}
+
+.profile-modal p {
+    margin-bottom: 12px;
+}
+
+.profile-modal button {
+    margin-top: 20px;
+}

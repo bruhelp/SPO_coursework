@@ -1,5 +1,4 @@
-const validators =
-    require("../utils/validators");
+const validators = require("../utils/validators");
 
 module.exports = (
     req,

@@ -1,5 +1,4 @@
-const authService =
-require("../services/authService");
+const authService = require("../services/authService");
 
 async function register(
     req,
@@ -9,19 +8,19 @@ async function register(
 
     try {
         const user =
-        await authService.register(
-            req.body.username,
-            req.body.email,
-            req.body.password,
-            req.ip
-        );
+            await authService.register(
+                req.body.username,
+                req.body.email,
+                req.body.password,
+                req.ip
+            );
 
         res
-        .status(201)
-        .json(user);
+            .status(201)
+            .json(user);
 
     }
-    catch (error) {next(error);}
+    catch (error) { next(error); }
 
 }
 
@@ -33,24 +32,24 @@ async function login(
 
     try {
         const token =
-        await authService.login(
-            req.body.email,
-            req.body.password,
-            req.ip
-        );
+            await authService.login(
+                req.body.email,
+                req.body.password,
+                req.ip
+            );
 
         res.json(token);
 
     }
-    catch (error) {next(error);}
+    catch (error) { next(error); }
 }
 
 async function logout(
     req,
     res
 ) {
-    
-    res.json({message:"Logout successful."});
+
+    res.json({ message: "Logout successful." });
 
 }
 
