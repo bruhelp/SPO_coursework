@@ -1,15 +1,22 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-import { login } from "../api/authApi";
+import {
+    login as loginRequest
+} from "../api/authApi";
+
 import useAuth from "../hooks/useAuth";
+
 import "./LoginPage.css";
 
 function LoginPage() {
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
-    const { login } = useAuth();
+    const {
+        login: authLogin
+    } = useAuth();
 
     const [email, setEmail] =
         useState("");
@@ -20,7 +27,9 @@ function LoginPage() {
     const [error, setError] =
         useState("");
 
-    async function handleSubmit(event) {
+    async function handleSubmit(
+        event
+    ) {
 
         event.preventDefault();
 
@@ -29,14 +38,14 @@ function LoginPage() {
         try {
 
             const response =
-                await login({
+                await loginRequest({
 
                     email,
                     password
 
                 });
 
-            saveToken(
+            authLogin(
                 response.accessToken
             );
 
@@ -47,8 +56,12 @@ function LoginPage() {
 
             setError(
 
-                error.response?.data?.message
+                error.response
+                    ?.data
+                    ?.message
+
                 ||
+
                 "Login failed."
 
             );
@@ -68,7 +81,9 @@ function LoginPage() {
                 </h1>
 
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={
+                        handleSubmit
+                    }
                     className="auth-form"
                 >
 
@@ -97,15 +112,17 @@ function LoginPage() {
                     />
 
                     {
-
                         error &&
-                        <div className="auth-error">
+                        <div
+                            className="auth-error"
+                        >
                             {error}
                         </div>
-
                     }
 
-                    <button type="submit">
+                    <button
+                        type="submit"
+                    >
                         Login
                     </button>
 
@@ -115,7 +132,9 @@ function LoginPage() {
 
                     Don't have an account?
 
-                    <Link to="/register">
+                    <Link
+                        to="/register"
+                    >
                         Register
                     </Link>
 

@@ -1,0 +1,66 @@
+.habit-card {
+
+    background: white;
+
+    border: 1px solid #dcdcdc;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    margin-bottom: 15px;
+
+}
+
+.habit-card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+
+}
+
+.habit-title {
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+}
+
+.habit-complete {
+
+    width: 30px;
+    height: 30px;
+
+    border-radius: 50%;
+
+    border: 1px solid #555;
+
+    background: white;
+
+    cursor: pointer;
+
+}
+
+.habit-goal {
+
+    margin-bottom: 8px;
+
+    font-size: 14px;
+
+}
+
+.habit-description {
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+
+    color: #555;
+
+}
