@@ -105,60 +105,61 @@ async function archive(
     Пользователь может отметить привычку за любую дату,
     как описано в правом блоке главной страницы.
 */
-
-async function complete(
-    habitId,
-    date,
-    userId,
-    ipAddress
-) {
-
-    const completedAt = date
-        ? new Date(date)
-        : new Date();
+async function complete(habitId, date, userId, ipAddress) {
+    const completedAt = date ? new Date(date) : new Date();
 
     const habit = await repository.getById(habitId);
-
     if (!habit) {
         throw createError("Habit not found.", 404);
     }
 
-    await logRepository.add(
-        habitId,
-        completedAt
-    );
+    const logs =
+        await logRepository
+            .getByHabit(
+                habitId
+            );
 
-    // ❗ ВАЖНО: ручное завершение привычки (кружок)
-    await repository.update(habitId, {
-        ...habit,
-        status: "completed"
-    });
+    const alreadyCompleted =
+        logs.some(
+            log => {
 
-    /*
-        Автоматическое завершение при цели
-    */
+                return (
+                    new Date(
+                        log.completed_at
+                    ).toDateString()
+
+                    ===
+
+                    completedAt
+                        .toDateString()
+
+                );
+
+            }
+        );
+
+    if (
+        !alreadyCompleted
+    ) {
+
+        await logRepository.add(
+            habitId,
+            completedAt
+        );
+
+    }
+
+    await logRepository.add(habitId, completedAt);
+
+    // Автоматическое завершение привычки при достижении цели (тип "total")
     if (habit.goal_type === "total") {
-
-        const statistics =
-            await statisticsService.getHabitStatistics(habitId);
-
+        const statistics = await statisticsService.getHabitStatistics(habitId);
         if (statistics.completedDays >= habit.goal_value) {
-
-            await repository.update(habitId, {
-                ...habit,
-                status: "completed"
-            });
+            await repository.update(habitId, { status: "completed" });
         }
     }
 
-    await auditService.writeLog(
-        userId,
-        "complete",
-        "habit",
-        habitId,
-        ipAddress
-    );
-
+    await auditService.writeLog(userId, "complete", "habit", habitId, ipAddress);
     return true;
 }
 
