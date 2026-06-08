@@ -33,21 +33,15 @@ async function add(
         `,
 
         [
-
             userId,
             action,
             entityType,
             entityId,
             ipAddress
-
         ]
-
     );
-
 }
 
 module.exports = {
-
     add
-
 };

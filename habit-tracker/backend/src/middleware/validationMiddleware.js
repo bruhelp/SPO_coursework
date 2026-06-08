@@ -1,5 +1,5 @@
 const validators =
-require("../utils/validators");
+    require("../utils/validators");
 
 module.exports = (
     req,
@@ -8,12 +8,9 @@ module.exports = (
 ) => {
 
     const body =
-    req.body;
+        req.body;
 
-    for (
-        const key
-        in body
-    ) {
+    for (const key in body) {
 
         if (
             body[key] === undefined ||
@@ -21,42 +18,27 @@ module.exports = (
         ) {
 
             return res
-            .status(400)
-            .json({
-
-                message:
-                `${key} is required.`
-
-            });
-
+                .status(400)
+                .json({
+                    message: `${key} is required.`
+                });
         }
 
         if (
-            typeof body[key] ===
-            "string"
+            typeof body[key] === "string"
         ) {
 
             if (
-                validators.isEmpty(
-                    body[key]
-                )
+                validators.isEmpty(body[key])
             ) {
-
                 return res
-                .status(400)
-                .json({
-
-                    message:
-                    `${key} cannot be empty.`
-
-                });
-
+                    .status(400)
+                    .json({
+                        message: `${key} cannot be empty.`
+                    });
             }
-
         }
-
     }
 
     next();
-
 };

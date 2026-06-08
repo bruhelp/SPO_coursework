@@ -4,10 +4,8 @@ const pool =
 async function getAllByUser(
     userId
 ) {
-
     const result =
         await pool.query(
-
             `
         SELECT *
 
@@ -23,19 +21,13 @@ async function getAllByUser(
         ORDER BY
         created_at DESC
         `,
-
             [userId]
-
         );
 
     return result.rows;
-
 }
 
-async function getById(
-    id
-) {
-
+async function getById(id) {
     const result =
         await pool.query(
 
@@ -50,15 +42,12 @@ async function getById(
             [id]
 
         );
-
     return result.rows[0];
-
 }
 
 async function create(
     habit
 ) {
-
     const result =
         await pool.query(
 
@@ -87,7 +76,6 @@ async function create(
 
         RETURNING *
         `,
-
             [
 
                 habit.userId,
@@ -103,21 +91,16 @@ async function create(
                 habit.startDate
 
             ]
-
         );
-
     return result.rows[0];
-
 }
 
 async function update(
     id,
     habit
 ) {
-
     const result =
         await pool.query(
-
             `
             UPDATE habits
                 SET
@@ -137,7 +120,6 @@ async function update(
         `,
 
             [
-
                 habit.categoryId,
                 habit.title,
                 habit.description,
@@ -150,21 +132,13 @@ async function update(
                 habit.startDate,
                 habit.status,
                 id
-
             ]
-
         );
-
     return result.rows[0];
-
 }
 
-async function remove(
-    id
-) {
-
+async function remove(id) {
     await pool.query(
-
         `
         DELETE
 
@@ -172,19 +146,12 @@ async function remove(
 
         WHERE id = $1
         `,
-
         [id]
-
     );
-
 }
 
-async function archive(
-    id
-) {
-
+async function archive(id) {
     await pool.query(
-
         `
         UPDATE habits
 
@@ -193,20 +160,16 @@ async function archive(
 
         WHERE id = $1
         `,
-
         [id]
-
     );
 
 }
 
 module.exports = {
-
     getAllByUser,
     getById,
     create,
     update,
     remove,
     archive
-
 };

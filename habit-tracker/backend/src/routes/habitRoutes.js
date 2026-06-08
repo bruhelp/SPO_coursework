@@ -1,7 +1,5 @@
 const router = require("express").Router();
-
 const auth = require("../middleware/authMiddleware");
-
 const controller = require("../controllers/habitController");
 
 router.get(
@@ -40,5 +38,4 @@ router.patch(
     controller.complete
 );
 
-module.exports =
-    router;
+module.exports = router;

@@ -1,8 +1,6 @@
-const service =
-    require("../services/categoryService");
+const service = require("../services/categoryService");
 
 async function getAll(req, res, next) {
-
     try {
         res.json(
             await service

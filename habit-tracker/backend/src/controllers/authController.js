@@ -8,15 +8,12 @@ async function register(
 ) {
 
     try {
-
         const user =
         await authService.register(
-
             req.body.username,
             req.body.email,
             req.body.password,
             req.ip
-
         );
 
         res
@@ -24,11 +21,7 @@ async function register(
         .json(user);
 
     }
-    catch (error) {
-
-        next(error);
-
-    }
+    catch (error) {next(error);}
 
 }
 
@@ -39,45 +32,30 @@ async function login(
 ) {
 
     try {
-
         const token =
         await authService.login(
-
             req.body.email,
             req.body.password,
             req.ip
-
         );
 
         res.json(token);
 
     }
-    catch (error) {
-
-        next(error);
-
-    }
-
+    catch (error) {next(error);}
 }
 
 async function logout(
     req,
     res
 ) {
-
-    res.json({
-
-        message:
-        "Logout successful."
-
-    });
+    
+    res.json({message:"Logout successful."});
 
 }
 
 module.exports = {
-
     register,
     login,
     logout
-
 };

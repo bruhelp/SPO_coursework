@@ -1,26 +1,13 @@
-const router =
-    require("express")
-        .Router();
+const router = require("express").Router();
 
-const auth =
-    require(
-        "../middleware/authMiddleware"
-    );
+const auth = require("../middleware/authMiddleware");
 
-const controller =
-    require(
-        "../controllers/userController"
-    );
+const controller = require("../controllers/userController");
 
 router.get(
-
     "/profile",
-
     auth,
-
     controller.profile
-
 );
 
-module.exports =
-    router;
+module.exports = router;

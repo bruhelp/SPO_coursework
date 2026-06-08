@@ -1,16 +1,8 @@
-const router =
-    require("express")
-        .Router();
+const router = require("express").Router();
 
-const auth =
-    require(
-        "../middleware/authMiddleware"
-    );
+const auth = require("../middleware/authMiddleware");
 
-const controller =
-    require(
-        "../controllers/categoryController"
-    );
+const controller = require("../controllers/categoryController");
 
 router.get(
     "/",

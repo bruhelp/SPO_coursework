@@ -1,46 +1,32 @@
 const pool =
-require("../config/database");
+    require("../config/database");
 
-async function findByEmail(
-    email
-) {
-
+async function findByEmail(email) {
     const result =
-    await pool.query(
-
-        `
+        await pool.query(
+            `
         SELECT *
         FROM users
         WHERE email = $1
         `,
-
-        [email]
-
-    );
-
+            [email]
+        );
     return result.rows[0];
-
 }
 
 async function findById(
     id
 ) {
-
     const result =
-    await pool.query(
-
-        `
+        await pool.query(
+            `
         SELECT *
         FROM users
         WHERE id = $1
         `,
-
-        [id]
-
-    );
-
+            [id]
+        );
     return result.rows[0];
-
 }
 
 async function create(
@@ -48,11 +34,9 @@ async function create(
     email,
     passwordHash
 ) {
-
     const result =
-    await pool.query(
-
-        `
+        await pool.query(
+            `
         INSERT INTO users
         (
             username,
@@ -69,23 +53,17 @@ async function create(
 
         RETURNING *
         `,
-
-        [
-            username,
-            email,
-            passwordHash
-        ]
-
-    );
-
+            [
+                username,
+                email,
+                passwordHash
+            ]
+        );
     return result.rows[0];
-
 }
 
 module.exports = {
-
     findByEmail,
     findById,
     create
-
 };

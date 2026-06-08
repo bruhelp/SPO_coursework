@@ -1,18 +1,18 @@
 const pool =
-require("../config/database");
+    require("../config/database");
 
 async function getAll() {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         SELECT *
         FROM categories
         ORDER BY name
         `
 
-    );
+        );
 
     return result.rows;
 
@@ -24,9 +24,9 @@ async function create(
 ) {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         INSERT INTO categories
         (
             name,
@@ -42,20 +42,16 @@ async function create(
         RETURNING *
         `,
 
-        [
-            name,
-            color
-        ]
+            [
+                name,
+                color
+            ]
 
-    );
-
+        );
     return result.rows[0];
-
 }
 
 module.exports = {
-
     getAll,
     create
-
 };

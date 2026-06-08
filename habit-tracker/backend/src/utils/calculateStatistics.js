@@ -1,30 +1,15 @@
-function calculateStatistics(
+function calculateStatistics(logs) {
 
-    logs
-
-) {
-
-    const completedDays =
-    logs.length;
-
-    const currentStreak =
-    completedDays;
-
-    const longestStreak =
-    completedDays;
+    const completedDays = logs.length;
+    const currentStreak = completedDays;
+    const longestStreak = completedDays;
 
     return {
-
         completedDays,
         currentStreak,
         longestStreak
-
     };
 
 }
 
-module.exports = {
-
-    calculateStatistics
-
-};
+module.exports = { calculateStatistics };

@@ -1,5 +1,5 @@
 const pool =
-require("../config/database");
+    require("../config/database");
 
 async function add(
     habitId,
@@ -7,9 +7,9 @@ async function add(
 ) {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         INSERT INTO
         habit_logs
         (
@@ -26,25 +26,22 @@ async function add(
         RETURNING *
         `,
 
-        [
-            habitId,
-            completedAt
-        ]
+            [
+                habitId,
+                completedAt
+            ]
 
-    );
-
+        );
     return result.rows[0];
-
 }
 
 async function getByHabit(
     habitId
 ) {
-
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         SELECT *
 
         FROM habit_logs
@@ -54,18 +51,12 @@ async function getByHabit(
         ORDER BY
         completed_at
         `,
-
-        [habitId]
-
-    );
-
+            [habitId]
+        );
     return result.rows;
-
 }
 
 module.exports = {
-
     add,
     getByHabit
-
 };

@@ -1,16 +1,8 @@
-const router =
-    require("express")
-        .Router();
+const router = require("express").Router();
 
-const auth =
-    require(
-        "../middleware/authMiddleware"
-    );
+const auth = require("../middleware/authMiddleware");
 
-const controller =
-    require(
-        "../controllers/statisticsController"
-    );
+const controller = require("../controllers/statisticsController");
 
 router.get(
     "/",
@@ -24,5 +16,4 @@ router.get(
     controller.habit
 );
 
-module.exports =
-    router;
+module.exports = router;

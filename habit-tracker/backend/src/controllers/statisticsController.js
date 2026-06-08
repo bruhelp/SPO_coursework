@@ -1,7 +1,4 @@
-const service =
-require(
-"../services/statisticsService"
-);
+const service = require("../services/statisticsService");
 
 async function general(
     req,
@@ -10,25 +7,12 @@ async function general(
 ) {
 
     try {
-
         res.json(
-
             await service
-            .getGeneralStatistics(
-
-                req.user.id
-
-            )
-
+                .getGeneralStatistics(req.user.id)
         );
-
     }
-    catch (error) {
-
-        next(error);
-
-    }
-
+    catch (error) { next(error); }
 }
 
 async function habit(
@@ -36,32 +20,15 @@ async function habit(
     res,
     next
 ) {
-
     try {
-
         res.json(
-
-            await service
-            .getHabitStatistics(
-
-                req.params.id
-
-            )
-
+            await service.getHabitStatistics(req.params.id)
         );
-
     }
-    catch (error) {
-
-        next(error);
-
-    }
-
+    catch (error) { next(error); }
 }
 
 module.exports = {
-
     general,
     habit
-
 };
