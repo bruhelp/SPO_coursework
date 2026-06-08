@@ -1,7 +1,7 @@
 const repository =
-require(
-"../repositories/userRepository"
-);
+    require(
+        "../repositories/userRepository"
+    );
 
 async function profile(
     req,
@@ -12,10 +12,10 @@ async function profile(
     try {
 
         const user =
-        await repository
-        .findById(
-            req.user.id
-        );
+            await repository
+                .findById(
+                    req.user.id
+                );
 
         res.json(user);
 

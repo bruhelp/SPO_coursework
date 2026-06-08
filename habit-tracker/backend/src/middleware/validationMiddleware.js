@@ -7,9 +7,29 @@ module.exports = (
     next
 ) => {
 
-    const body = req.body;
+    const body =
+    req.body;
 
-    for (const key in body) {
+    for (
+        const key
+        in body
+    ) {
+
+        if (
+            body[key] === undefined ||
+            body[key] === null
+        ) {
+
+            return res
+            .status(400)
+            .json({
+
+                message:
+                `${key} is required.`
+
+            });
+
+        }
 
         if (
             typeof body[key] ===

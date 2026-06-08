@@ -1,5 +1,4 @@
 class Habit {
-
     constructor(
         id,
         userId,
@@ -31,7 +30,6 @@ class Habit {
         this.status = status;
         this.createdAt = createdAt;
     }
-
 }
 
 module.exports = Habit;

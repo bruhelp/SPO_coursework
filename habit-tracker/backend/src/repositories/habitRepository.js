@@ -1,14 +1,14 @@
 const pool =
-require("../config/database");
+    require("../config/database");
 
 async function getAllByUser(
     userId
 ) {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         SELECT *
 
         FROM habits
@@ -24,9 +24,9 @@ async function getAllByUser(
         created_at DESC
         `,
 
-        [userId]
+            [userId]
 
-    );
+        );
 
     return result.rows;
 
@@ -37,9 +37,9 @@ async function getById(
 ) {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         SELECT *
 
         FROM habits
@@ -47,9 +47,9 @@ async function getById(
         WHERE id = $1
         `,
 
-        [id]
+            [id]
 
-    );
+        );
 
     return result.rows[0];
 
@@ -60,9 +60,9 @@ async function create(
 ) {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
+            `
         INSERT INTO habits
         (
             user_id,
@@ -88,23 +88,23 @@ async function create(
         RETURNING *
         `,
 
-        [
+            [
 
-            habit.userId,
-            habit.categoryId,
-            habit.title,
-            habit.description,
-            habit.colorTheme,
-            habit.frequencyType,
-            habit.frequencyValue,
-            habit.goalType,
-            habit.goalValue,
-            habit.goalDate,
-            habit.startDate
+                habit.userId,
+                habit.categoryId,
+                habit.title,
+                habit.description,
+                habit.colorTheme,
+                habit.frequencyType,
+                habit.frequencyValue,
+                habit.goalType,
+                habit.goalValue,
+                habit.goalDate,
+                habit.startDate
 
-        ]
+            ]
 
-    );
+        );
 
     return result.rows[0];
 
@@ -116,46 +116,44 @@ async function update(
 ) {
 
     const result =
-    await pool.query(
+        await pool.query(
 
-        `
-        UPDATE habits
-
-        SET
-
-        category_id = $1,
-        title = $2,
-        description = $3,
-        color_theme = $4,
-        frequency_type = $5,
-        frequency_value = $6,
-        goal_type = $7,
-        goal_value = $8,
-        goal_date = $9,
-        start_date = $10
-
-        WHERE id = $11
-
-        RETURNING *
+            `
+            UPDATE habits
+                SET
+                    category_id = $1,
+                    title = $2,
+                    description = $3,
+                    color_theme = $4,
+                    frequency_type = $5,
+                    frequency_value = $6,
+                    goal_type = $7,
+                    goal_value = $8,
+                    goal_date = $9,
+                    start_date = $10,
+                    status = $11
+                WHERE id = $12
+                RETURNING *;
         `,
 
-        [
+            [
 
-            habit.categoryId,
-            habit.title,
-            habit.description,
-            habit.colorTheme,
-            habit.frequencyType,
-            habit.frequencyValue,
-            habit.goalType,
-            habit.goalValue,
-            habit.goalDate,
-            habit.startDate,
-            id
+                habit.categoryId,
+                habit.title,
+                habit.description,
+                habit.colorTheme,
+                habit.frequencyType,
+                habit.frequencyValue,
+                habit.goalType,
+                habit.goalValue,
+                habit.goalDate,
+                habit.startDate,
+                habit.status,
+                id
 
-        ]
+            ]
 
-    );
+        );
 
     return result.rows[0];
 

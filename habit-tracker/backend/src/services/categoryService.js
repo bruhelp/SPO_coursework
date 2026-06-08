@@ -1,45 +1,21 @@
-const repository =
-require(
-"../repositories/categoryRepository"
-);
+const repository = require("../repositories/categoryRepository");
+
+const createError = require("../utils/createError");
 
 async function getAll() {
-
     return await
-    repository.getAll();
-
+        repository.getAll();
 }
 
-async function create(
-
-    name,
-    color
-
-) {
-
-    if (
-        !name.trim()
-    ) {
-
-        throw new Error(
-            "Category name required."
-        );
-
+async function create(name, color) {
+    if (!name.trim()) {
+        throw createError("Category name required.");
     }
-
     return await
-    repository.create(
-
-        name,
-        color
-
-    );
-
+        repository.create(
+            name,
+            color
+        );
 }
 
-module.exports = {
-
-    getAll,
-    create
-
-};
+module.exports = { getAll, create };

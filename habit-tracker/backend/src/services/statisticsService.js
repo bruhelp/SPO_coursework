@@ -1,56 +1,29 @@
-const habitRepository =
-require(
-"../repositories/habitRepository"
-);
-
-const habitLogRepository =
-require(
-"../repositories/habitLogRepository"
-);
+const habitRepository = require("../repositories/habitRepository");
+const habitLogRepository = require("../repositories/habitLogRepository");
+const calculator = require("../utils/calculateStatistics");
 
 /*
     Общая статистика пользователя.
 */
 
-async function getGeneralStatistics(
+async function getGeneralStatistics(userId) {
 
-    userId
+    const habits = await habitRepository.getAllByUser(userId);
 
-) {
+    let totalHabits = habits.length;
 
-    const habits =
-    await habitRepository
-    .getAllByUser(
-        userId
-    );
-
-    let totalHabits =
-    habits.length;
-
-    let totalCompletions =
-    0;
+    let totalCompletions = 0;
 
     for (
-        const habit
-        of habits
+        const habit of habits
     ) {
-
-        const logs =
-        await habitLogRepository
-        .getByHabit(
-            habit.id
-        );
-
-        totalCompletions +=
-        logs.length;
-
+        const logs = await habitLogRepository.getByHabit(habit.id);
+        totalCompletions += logs.length;
     }
 
     return {
-
         totalHabits,
         totalCompletions
-
     };
 
 }
@@ -59,33 +32,20 @@ async function getGeneralStatistics(
     Статистика конкретной привычки.
 */
 
-async function getHabitStatistics(
-
-    habitId
-
-) {
+async function getHabitStatistics(habitId) {
 
     const logs =
-    await habitLogRepository
-    .getByHabit(
-        habitId
-    );
+        await habitLogRepository.getByHabit(habitId);
+
+    const statistics = calculator.calculateStatistics(logs);
 
     return {
-
-        completedDays:
-        logs.length,
-
-        history:
-        logs
-
+        ...statistics,
+        history: logs
     };
-
 }
 
 module.exports = {
-
     getGeneralStatistics,
     getHabitStatistics
-
 };

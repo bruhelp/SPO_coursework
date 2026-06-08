@@ -1,28 +1,28 @@
 const router =
-require("express")
-.Router();
+    require("express")
+        .Router();
 
 const auth =
-require(
-"../middleware/authMiddleware"
-);
+    require(
+        "../middleware/authMiddleware"
+    );
 
 const controller =
-require(
-"../controllers/categoryController"
-);
+    require(
+        "../controllers/categoryController"
+    );
 
 router.get(
-"/",
-auth,
-controller.getAll
+    "/",
+    auth,
+    controller.getAll
 );
 
 router.post(
-"/",
-auth,
-controller.create
+    "/",
+    auth,
+    controller.create
 );
 
 module.exports =
-router;
+    router;
