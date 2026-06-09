@@ -1,6 +1,7 @@
 .home-page {
     display: flex;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 70px);
+    background: linear-gradient(180deg, #f6faf7 0%, #ffffff 100%);
 }
 
 .habit-list {
@@ -8,10 +9,11 @@
     min-width: 280px;
     padding: 20px 16px;
     overflow-y: auto;
-    background: #f7f7f8;
+    background: rgba(247, 247, 248, 0.92);
     border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
+    gap: 0;
 }
 
 .habit-list-empty {
@@ -46,8 +48,13 @@
 
 .habit-details {
     flex: 1;
-    padding: 32px 36px;
+    padding: 28px 32px;
     overflow-y: auto;
+}
+
+.habit-details-stack {
+    display: flex;
+    flex-direction: column;
 }
 
 .habit-details h2 {
@@ -72,40 +79,7 @@
     opacity: 0.4;
 }
 
-.stat-row {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 16px;
-}
-
-.stat-item {
-    background: #f5f5f5;
-    border-radius: 10px;
-    padding: 12px 18px;
-    text-align: center;
-    min-width: 90px;
-}
-
-.stat-item strong {
-    display: block;
-    font-size: 24px;
-    color: #4CAF50;
-}
-
-.stat-item span {
-    font-size: 12px;
-    color: #888;
-}
-
-.history-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.history-list li {
-    padding: 6px 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 14px;
-    color: #555;
+.habit-details-empty,
+.habit-details-stack {
+    min-height: 100%;
 }

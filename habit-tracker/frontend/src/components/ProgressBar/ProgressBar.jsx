@@ -1,7 +1,6 @@
 import "./ProgressBar.css";
 
 function ProgressBar({ current = 0, target = 0, value }) {
-    // Support both (current, target) and legacy (value) prop
     let percent;
     if (value !== undefined) {
         percent = Math.min(100, Math.max(0, value));
@@ -17,6 +16,7 @@ function ProgressBar({ current = 0, target = 0, value }) {
                 className="progress-fill"
                 style={{ width: `${percent}%` }}
             />
+            <span className="progress-label">{percent}%</span>
         </div>
     );
 }

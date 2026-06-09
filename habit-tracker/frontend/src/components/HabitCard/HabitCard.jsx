@@ -3,7 +3,12 @@ import ProgressBar from "../ProgressBar/ProgressBar";
 import { getHabitStatistics } from "../../api/statisticsApi";
 import "./HabitCard.css";
 
-function HabitCard({ habit, onComplete, onSelect }) {
+function toDateKey(value) {
+    const date = new Date(value);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function HabitCard({ habit, categoryName, onComplete, onSelect }) {
 
     const [statistics, setStatistics] = useState(null);
 
@@ -21,18 +26,28 @@ function HabitCard({ habit, onComplete, onSelect }) {
     }, [loadStatistics]);
 
     const hasGoal = habit.goal_type && habit.goal_type !== "none";
+    const goalValue = Number(habit.goal_value || 0);
+    const completedDays = Number(statistics?.completedDays || 0);
 
     const completedToday = statistics?.history?.some(item => {
-        const today = new Date().toDateString();
-        const completed = new Date(item.completed_at).toDateString();
-        return today === completed;
+        return toDateKey(item.completed_at) === toDateKey(new Date());
     }) ?? false;
 
-    let progress = 0;
-    if (hasGoal && statistics && habit.goal_value > 0) {
-        progress = Math.min(
-            100,
-            Math.floor((statistics.completedDays / habit.goal_value) * 100)
+    let progressCurrent = completedDays;
+    let progressTarget = goalValue;
+
+    if (habit.goal_type === "date" && habit.goal_date && habit.start_date) {
+        const start = new Date(habit.start_date);
+        const end = new Date(habit.goal_date);
+        const today = new Date();
+        const totalDays = Math.max(
+            1,
+            Math.ceil((end - start) / 86400000)
+        );
+        progressTarget = totalDays;
+        progressCurrent = Math.max(
+            0,
+            Math.min(totalDays, Math.ceil((today - start) / 86400000))
         );
     }
 
@@ -42,17 +57,30 @@ function HabitCard({ habit, onComplete, onSelect }) {
         await loadStatistics();
     }
 
+    const goalLabel = (() => {
+        if (!hasGoal) {
+            return null;
+        }
+
+        if (habit.goal_type === "date" && habit.goal_date) {
+            return `До ${new Date(habit.goal_date).toLocaleDateString("ru-RU")}`;
+        }
+
+        return `${completedDays} / ${goalValue}`;
+    })();
+
     return (
         <div
             className={`habit-card${completedToday ? " habit-card--done" : ""}`}
             onClick={() => onSelect(habit)}
         >
+            <div className="habit-accent" style={{ backgroundColor: habit.color_theme || "#4CAF50" }} />
             <div className="habit-header">
                 <div className="habit-title">{habit.title}</div>
                 <button
                     className={`complete-button${completedToday ? " complete-button--done" : ""}`}
                     onClick={handleComplete}
-                    title={completedToday ? "Выполнено сегодня" : "Отметить выполнение"}
+                    title={completedToday ? "Снять отметку за сегодня" : "Отметить выполнение за сегодня"}
                 >
                     {completedToday ? "✓" : "○"}
                 </button>
@@ -62,16 +90,14 @@ function HabitCard({ habit, onComplete, onSelect }) {
                 <div className="habit-description">{habit.description}</div>
             )}
 
-            {habit.category_id && (
-                <div className="habit-category">Категория #{habit.category_id}</div>
+            {categoryName && (
+                <div className="habit-category">{categoryName}</div>
             )}
 
             {hasGoal && (
                 <div className="habit-goal-block">
-                    <div className="habit-goal">
-                        Цель: {statistics?.completedDays ?? 0} / {habit.goal_value}
-                    </div>
-                    <ProgressBar current={statistics?.completedDays ?? 0} target={habit.goal_value} />
+                    <div className="habit-goal">{goalLabel}</div>
+                    <ProgressBar current={progressCurrent} target={progressTarget} />
                 </div>
             )}
         </div>

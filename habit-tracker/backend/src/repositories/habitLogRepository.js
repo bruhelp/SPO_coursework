@@ -56,7 +56,22 @@ async function getByHabit(
     return result.rows;
 }
 
+async function removeByHabitAndDate(habitId, completedAt) {
+    const result = await pool.query(
+        `
+        DELETE FROM habit_logs
+        WHERE habit_id = $1
+          AND completed_at::date = $2::date
+        RETURNING *
+        `,
+        [habitId, completedAt]
+    );
+
+    return result.rows;
+}
+
 module.exports = {
     add,
-    getByHabit
+    getByHabit,
+    removeByHabitAndDate
 };

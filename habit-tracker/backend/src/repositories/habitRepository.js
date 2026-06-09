@@ -2,8 +2,15 @@ const pool =
     require("../config/database");
 
 async function getAllByUser(
-    userId
+    userId,
+    includeArchived = false
 ) {
+    const conditions = ["user_id = $1"];
+
+    if (!includeArchived) {
+        conditions.push("status <> 'archived'");
+    }
+
     const result =
         await pool.query(
             `
@@ -12,11 +19,7 @@ async function getAllByUser(
         FROM habits
 
         WHERE
-        user_id = $1
-
-        AND
-
-        status <> 'archived'
+        ${conditions.join("\n        AND\n        ")}
 
         ORDER BY
         created_at DESC

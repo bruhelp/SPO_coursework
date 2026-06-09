@@ -9,6 +9,10 @@ async function getAll(userId) {
             .getAllByUser(userId);
 }
 
+async function getAllIncludingArchived(userId) {
+    return await repository.getAllByUser(userId, true);
+}
+
 async function create(
     habit,
     ipAddress
@@ -138,18 +142,11 @@ async function complete(habitId, date, userId, ipAddress) {
             }
         );
 
-    if (
-        !alreadyCompleted
-    ) {
-
-        await logRepository.add(
-            habitId,
-            completedAt
-        );
-
+    if (alreadyCompleted) {
+        await logRepository.removeByHabitAndDate(habitId, completedAt);
+    } else {
+        await logRepository.add(habitId, completedAt);
     }
-
-    await logRepository.add(habitId, completedAt);
 
     // Автоматическое завершение привычки при достижении цели (тип "total")
     if (habit.goal_type === "total") {
@@ -165,6 +162,7 @@ async function complete(habitId, date, userId, ipAddress) {
 
 module.exports = {
     getAll,
+    getAllIncludingArchived,
     create,
     update,
     remove,

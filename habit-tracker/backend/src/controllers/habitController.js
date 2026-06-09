@@ -2,10 +2,12 @@ const service = require("../services/habitService");
 
 async function getAll(req, res, next) {
     try {
-        res.json(
-            await service
-                .getAll(req.user.id)
-        );
+        const includeArchived = req.query.includeArchived === "true";
+        const habits = includeArchived
+            ? await service.getAllIncludingArchived(req.user.id)
+            : await service.getAll(req.user.id);
+
+        res.json(habits);
     }
     catch (error) {
         next(error);

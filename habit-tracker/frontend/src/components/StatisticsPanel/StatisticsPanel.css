@@ -1,0 +1,27 @@
+.statistics-panel {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.statistics-item {
+    background: white;
+    border: 1px solid #ececec;
+    border-radius: 18px;
+    padding: 18px;
+    text-align: center;
+}
+
+.statistics-item strong {
+    display: block;
+    font-size: 30px;
+    line-height: 1;
+    color: #1f7a3f;
+}
+
+.statistics-item span {
+    display: block;
+    margin-top: 8px;
+    color: #6b7280;
+}
