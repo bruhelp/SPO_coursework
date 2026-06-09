@@ -7,12 +7,11 @@ import {
     isValidGoalType,
     isValidFrequency
 } from "../../utils/validators";
-
 import "./HabitModal.css";
 
 function HabitModal({ onClose, onCreated }) {
-
     const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
         title: "",
@@ -32,135 +31,181 @@ function HabitModal({ onClose, onCreated }) {
         loadCategories();
     }, []);
 
+    // Close on backdrop click
+    function handleBackdropClick(e) {
+        if (e.target === e.currentTarget) onClose();
+    }
+
     async function loadCategories() {
-        const data = await getCategories();
-        setCategories(data);
+        try {
+            const data = await getCategories();
+            setCategories(data);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     function updateField(field, value) {
-        setForm(prev => ({
-            ...prev,
-            [field]: value
-        }));
+        setForm(prev => ({ ...prev, [field]: value }));
     }
 
-    async function handleSubmit(e) {
-        e.preventDefault();
+    async function handleSubmit() {
         setError("");
 
-        if (isEmpty(form.title)) {
-            return setError("Название обязательно");
-        }
-
-        if (!isValidFrequency(form.frequencyType)) {
-            return setError("Неверная частота");
-        }
-
-        if (!isValidGoalType(form.goalType)) {
-            return setError("Неверная цель");
-        }
-
+        if (isEmpty(form.title)) return setError("Название обязательно");
+        if (!isValidFrequency(form.frequencyType)) return setError("Неверная частота");
+        if (!isValidGoalType(form.goalType)) return setError("Неверная цель");
         if (form.goalValue && !isPositiveInteger(Number(form.goalValue))) {
-            return setError("goalValue должен быть числом");
+            return setError("Цель должна быть положительным числом");
         }
 
+        setLoading(true);
         try {
             await createHabit({
                 ...form,
-                categoryId: Number(form.categoryId),
+                categoryId: form.categoryId ? Number(form.categoryId) : null,
                 frequencyValue: Number(form.frequencyValue),
-                goalValue: form.goalValue ? Number(form.goalValue) : null
+                goalValue: form.goalValue ? Number(form.goalValue) : null,
+                goalDate: form.goalDate || null
             });
 
             onCreated();
             onClose();
-        }
-        catch (err) {
+        } catch (err) {
             setError(err.response?.data?.message || "Ошибка создания привычки");
+        } finally {
+            setLoading(false);
         }
     }
 
+    const showGoalValue = form.goalType === "streak" || form.goalType === "total";
+    const showGoalDate = form.goalType === "date";
+
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={handleBackdropClick}>
             <div className="modal">
-                <h2>Новая привычка</h2>
+                <div className="modal-header">
+                    <h2>Новая привычка</h2>
+                    <button className="modal-close" onClick={onClose}>✕</button>
+                </div>
 
-                <form onSubmit={handleSubmit}>
+                <div className="modal-body">
+                    <div className="field-group">
+                        <label>Название *</label>
+                        <input
+                            placeholder="Например: Медитация"
+                            value={form.title}
+                            onChange={e => updateField("title", e.target.value)}
+                            autoFocus
+                        />
+                    </div>
 
-                    <input
-                        placeholder="Название"
-                        value={form.title}
-                        onChange={e => updateField("title", e.target.value)}
-                    />
+                    <div className="field-group">
+                        <label>Описание</label>
+                        <textarea
+                            placeholder="Кратко о привычке..."
+                            value={form.description}
+                            onChange={e => updateField("description", e.target.value)}
+                            rows={2}
+                        />
+                    </div>
 
-                    <textarea
-                        placeholder="Описание"
-                        value={form.description}
-                        onChange={e => updateField("description", e.target.value)}
-                    />
+                    <div className="field-row">
+                        <div className="field-group">
+                            <label>Категория</label>
+                            <select
+                                value={form.categoryId}
+                                onChange={e => updateField("categoryId", e.target.value)}
+                            >
+                                <option value="">Без категории</option>
+                                {categories.map(c => (
+                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    <select
-                        value={form.categoryId}
-                        onChange={e => updateField("categoryId", e.target.value)}
-                    >
-                        <option value="">Категория</option>
-                        {categories.map(c => (
-                            <option key={c.id} value={c.id}>
-                                {c.name}
-                            </option>
-                        ))}
-                    </select>
+                        <div className="field-group field-group--color">
+                            <label>Цвет</label>
+                            <input
+                                type="color"
+                                value={form.colorTheme}
+                                onChange={e => updateField("colorTheme", e.target.value)}
+                            />
+                        </div>
+                    </div>
 
-                    <input
-                        type="color"
-                        value={form.colorTheme}
-                        onChange={e => updateField("colorTheme", e.target.value)}
-                    />
+                    <div className="field-row">
+                        <div className="field-group">
+                            <label>Частота</label>
+                            <select
+                                value={form.frequencyType}
+                                onChange={e => updateField("frequencyType", e.target.value)}
+                            >
+                                <option value="day">Каждый день</option>
+                                <option value="week">Раз в неделю</option>
+                                <option value="month">Раз в месяц</option>
+                            </select>
+                        </div>
 
-                    <select
-                        value={form.frequencyType}
-                        onChange={e => updateField("frequencyType", e.target.value)}
-                    >
-                        <option value="day">День</option>
-                        <option value="week">Неделя</option>
-                        <option value="month">Месяц</option>
-                    </select>
+                        <div className="field-group">
+                            <label>Раз в период</label>
+                            <input
+                                type="number"
+                                min="1"
+                                value={form.frequencyValue}
+                                onChange={e => updateField("frequencyValue", e.target.value)}
+                            />
+                        </div>
+                    </div>
 
-                    <input
-                        type="number"
-                        value={form.frequencyValue}
-                        onChange={e => updateField("frequencyValue", e.target.value)}
-                    />
+                    <div className="field-group">
+                        <label>Тип цели</label>
+                        <select
+                            value={form.goalType}
+                            onChange={e => updateField("goalType", e.target.value)}
+                        >
+                            <option value="none">Без цели</option>
+                            <option value="date">До даты</option>
+                            <option value="streak">Серия дней</option>
+                            <option value="total">Всего выполнений</option>
+                        </select>
+                    </div>
 
-                    <select
-                        value={form.goalType}
-                        onChange={e => updateField("goalType", e.target.value)}
-                    >
-                        <option value="none">Нет цели</option>
-                        <option value="date">До даты</option>
-                        <option value="streak">Серия</option>
-                        <option value="total">Всего</option>
-                    </select>
+                    {showGoalValue && (
+                        <div className="field-group">
+                            <label>{form.goalType === "streak" ? "Дней подряд" : "Всего раз"}</label>
+                            <input
+                                type="number"
+                                min="1"
+                                placeholder="Введите число"
+                                value={form.goalValue}
+                                onChange={e => updateField("goalValue", e.target.value)}
+                            />
+                        </div>
+                    )}
 
-                    <input
-                        type="number"
-                        placeholder="Цель"
-                        value={form.goalValue}
-                        onChange={e => updateField("goalValue", e.target.value)}
-                    />
+                    {showGoalDate && (
+                        <div className="field-group">
+                            <label>Дата цели</label>
+                            <input
+                                type="date"
+                                value={form.goalDate}
+                                onChange={e => updateField("goalDate", e.target.value)}
+                            />
+                        </div>
+                    )}
 
-                    <input
-                        type="date"
-                        value={form.goalDate}
-                        onChange={e => updateField("goalDate", e.target.value)}
-                    />
+                    {error && <div className="modal-error">{error}</div>}
+                </div>
 
-                    {error && <div className="error">{error}</div>}
-
-                    <button type="submit">Создать</button>
-                    <button type="button" onClick={onClose}>Закрыть</button>
-
-                </form>
+                <div className="modal-footer">
+                    <button className="btn-secondary" onClick={onClose} disabled={loading}>
+                        Отмена
+                    </button>
+                    <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
+                        {loading ? "Создание..." : "Создать"}
+                    </button>
+                </div>
             </div>
         </div>
     );

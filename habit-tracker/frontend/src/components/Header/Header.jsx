@@ -36,7 +36,7 @@ function Header({
                 className="header-title"
             >
 
-                Habit Tracker
+                Трекер привычек
 
             </div>
 
